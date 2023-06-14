@@ -5,3 +5,6 @@
 .obsidian/core-plugins.json
 .obsidian/hotkeys.json
 .obsidian/workspace.json
+.idea/*
+Linux/cmake-build-debug/*
+
