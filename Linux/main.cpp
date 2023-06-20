@@ -134,10 +134,10 @@ void demo(){
     PointCloudPtr new_src_cloud(new pcl::PointCloud<pcl::PointXYZ>);
     PointCloudPtr new_des_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
-    string src_path = "demo/src.pcd";
-    string des_path = "demo/des.pcd";
-    pcl::io::loadPCDFile(src_path, *src_cloud);
-    pcl::io::loadPCDFile(des_path, *des_cloud);
+    string src_path = "demo/UVA1.ply";
+    string des_path = "demo/UVA2.ply";
+    pcl::io::loadPLYFile(src_path, *src_cloud);
+    pcl::io::loadPLYFile(des_path, *des_cloud);
     float src_resolution = MeshResolution_mr_compute(src_cloud);
     float des_resolution = MeshResolution_mr_compute(des_cloud);
     float resolution = (src_resolution + des_resolution) / 2;

@@ -1338,7 +1338,7 @@ bool registration(PointCloudPtr& src, PointCloudPtr& des, vector<Corre_3DMatch>&
     cout << endl;
     cout << best_est << endl;
     Corres_Viewer_Score(src, des, selected, resolution, (int)selected.size());
-    visualization(src, des, best_est, resolution);
+//    visualization(src, des, best_est, resolution);
 
     //保存匹配到txt
     savetxt(correspondence, folderPath + "/corr.txt");
