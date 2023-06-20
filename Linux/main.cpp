@@ -17,7 +17,7 @@ bool low_inlieratio;
 bool no_logs;
 
 string threeDMatch[8] = {
-	"7-scenes-redkitchen"
+	"inner"
 };
 
 string threeDlomatch[8] = {
@@ -338,6 +338,7 @@ int main(int argc, char** argv) {
 		{
 			cout << i + 1 << ":" << threeDMatch[i] << endl;
 			string analyse_csv = resultPath + "/" + threeDMatch[i] + "_" + descriptor + ".csv";
+
 			ofstream outFile;
 			outFile.open(analyse_csv.c_str(), ios::out);
 			outFile.setf(ios::fixed, ios::floatfield);
@@ -367,7 +368,7 @@ int main(int argc, char** argv) {
 		ofstream outFile;
 		outFile.open(detail_txt.c_str(), ios::out);
 		outFile.setf(ios::fixed, ios::floatfield);
-		for (size_t i = 0; i < 8; i++)
+		for (size_t i = 0; i < 1; i++)
 		{
 			total_num += scene_num[i];
 			total_re += scene_re_sum[i];
@@ -392,182 +393,6 @@ int main(int argc, char** argv) {
 		cout << "\tTE: " << total_te / (corrected / 1.0) << endl;
 		outFile << "\tTE: " << setprecision(4) << total_te / (corrected / 1.0) << endl;
 		outFile.close();
-	}
-	else if (datasetName == "3dlomatch")
-	{
-		for (size_t i = id; i < 8; i++)
-		{
-			string analyse_csv = resultPath + "/" + threeDlomatch[i] + "_" + descriptor + ".csv";
-			ofstream outFile;
-			outFile.open(analyse_csv.c_str(), ios::out);
-			outFile.setf(ios::fixed, ios::floatfield);
-			outFile << "pair_name" << ',' << "corrected_or_no" << ',' << "inlier_num" << ',' << "total_num" << ',' << "inlier_ratio" << ',' << "est_rr" << ',' << "RE" << ',' << "TE" << endl;
-			vector<string>matched = analyse("3dlomatch", resultPath + "/" + threeDlomatch[i], datasetPath + "/" + threeDlomatch[i], descriptor, outFile, id, i);
-			scene_re_sum.push_back(RE);
-			scene_te_sum.push_back(TE);
-			if (!matched.empty())
-			{
-				cout << endl;
-				cout << threeDlomatch[i] << ":" << endl;
-				for (auto t : matched)
-				{
-					cout << "\t" << t << endl;
-				}
-				cout << endl;
-				cout << threeDlomatch[i] << ":" << matched.size() / (scene_num[i] / 1.0) << endl;
-				cout << "RE:" << RE / matched.size() << "\tTE:" << TE / matched.size() << endl;
-				corrected += matched.size();
-				total_success_est_rate.push_back(success_estimate_rate);
-				scene_correct_num.push_back(matched.size());
-			}
-			outFile.close();
-			matched.clear();
-		}
-		string detail_txt = resultPath + "/details.txt";
-		ofstream outFile;
-		outFile.open(detail_txt.c_str(), ios::out);
-		outFile.setf(ios::fixed, ios::floatfield);
-		for (size_t i = 0; i < 8; i++)
-		{
-			total_num += scene_num[i];
-			total_re += scene_re_sum[i];
-			total_te += scene_te_sum[i];
-			cout << i + 1 << ":" << endl;
-			outFile << i + 1 << ":" << endl;
-			cout << "\tRR: " << scene_correct_num[i] << "/" << scene_num[i] << " " << scene_correct_num[i] / (scene_num[i] / 1.0) << endl;
-			outFile << "\tRR: " << scene_correct_num[i] << "/" << scene_num[i] << " " << setprecision(4) << scene_correct_num[i] / (scene_num[i] / 1.0) << endl;
-			cout << "\tSuccess_est_rate: " << total_success_est_rate[i] / (scene_num[i] / 1.0) << endl;
-			cout << "\tRE: " << scene_re_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-			outFile << "\tRE: " << setprecision(4) << scene_re_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-			cout << "\tTE: " << scene_te_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-			outFile << "\tTE: " << setprecision(4) << scene_te_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-		}
-		cout << "total:" << endl;
-		outFile << "total:" << endl;
-		cout << "\tRR: " << corrected / (total_num / 1.0) << endl;
-		outFile << "\tRR: " << setprecision(4) << corrected / (total_num / 1.0) << endl;
-		cout << "\tSuccess_est_rate: " << accumulate(total_success_est_rate.begin(), total_success_est_rate.end(), 0.0) / (total_num / 1.0) << endl;
-		cout << "\tRE: " << total_re / (corrected / 1.0) << endl;
-		outFile << "\tRE: " << setprecision(4) << total_re / (corrected / 1.0) << endl;
-		cout << "\tTE: " << total_te / (corrected / 1.0) << endl;
-		outFile << "\tTE: " << setprecision(4) << total_te / (corrected / 1.0) << endl;
-		outFile.close();
-	}
-	else if (datasetName == "ETH")
-	{
-		for (size_t i = id; i < 4; i++)
-		{
-			cout << i + 1 << ":" << ETH[i] << endl;
-			string analyse_csv = resultPath + "/" + ETH[i] + "_" + descriptor + ".csv";
-			ofstream outFile;
-			outFile.open(analyse_csv.c_str(), ios::out);
-			outFile.setf(ios::fixed, ios::floatfield);
-			outFile << "pair_name" << ',' << "corrected_or_no" << ',' << "inlier_num" << ',' << "total_num" << ',' << "inlier_ratio" << ',' << "est_rr" << ',' << "RE" << ',' << "TE" << ',' << "construction" << ',' << "search" << ',' << "selection" << ',' << "estimation" << endl;
-			vector<string>matched = analyse("3dmatch", resultPath + "/" + ETH[i], datasetPath + "/" + ETH[i], descriptor, outFile, id, i);
-			scene_re_sum.push_back(RE);
-			scene_te_sum.push_back(TE);
-			if (!matched.empty())
-			{
-				cout << endl;
-				cout << ETH[i] << ":" << endl;
-				for (auto t : matched)
-				{
-					cout << "\t" << t << endl;
-				}
-				cout << endl;
-				cout << ETH[i] << ":" << matched.size() << endl;
-				cout << "success_est_rate:" << success_estimate_rate / (scene_num[i] / 1.0) << "RE:" << RE / matched.size() << "\tTE:" << TE / matched.size() << endl;
-				corrected += matched.size();
-				total_success_est_rate.push_back(success_estimate_rate);
-				scene_correct_num.push_back(matched.size());
-			}
-			outFile.close();
-			matched.clear();
-		}
-		string detail_txt = resultPath + "/details.txt";
-		ofstream outFile;
-		outFile.open(detail_txt.c_str(), ios::out);
-		outFile.setf(ios::fixed, ios::floatfield);
-		for (size_t i = 0; i < 4; i++)
-		{
-			total_num += scene_num[i];
-			total_re += scene_re_sum[i];
-			total_te += scene_te_sum[i];
-			cout << i + 1 << ":" << endl;
-			outFile << i + 1 << ":" << endl;
-			cout << "\tRR: " << scene_correct_num[i] << "/" << scene_num[i] << " " << scene_correct_num[i] / (scene_num[i] / 1.0) << endl;
-			outFile << "\tRR: " << scene_correct_num[i] << "/" << scene_num[i] << " " << setprecision(4) << scene_correct_num[i] / (scene_num[i] / 1.0) << endl;
-			cout << "\tSuccess_est_rate: " << total_success_est_rate[i] / (scene_num[i] / 1.0) << endl;
-			cout << "\tRE: " << scene_re_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-			outFile << "\tRE: " << setprecision(4) << scene_re_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-			cout << "\tTE: " << scene_te_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-			outFile << "\tTE: " << setprecision(4) << scene_te_sum[i] / (scene_correct_num[i] / 1.0) << endl;
-		}
-		cout << "total:" << endl;
-		outFile << "total:" << endl;
-		cout << "\tRR: " << corrected / (total_num / 1.0) << endl;
-		outFile << "\tRR: " << setprecision(4) << corrected / (total_num / 1.0) << endl;
-		cout << "\tSuccess_est_rate: " << accumulate(total_success_est_rate.begin(), total_success_est_rate.end(), 0.0) / (total_num / 1.0) << endl;
-		cout << "\tRE: " << total_re / (corrected / 1.0) << endl;
-		outFile << "\tRE: " << setprecision(4) << total_re / (corrected / 1.0) << endl;
-		cout << "\tTE: " << total_te / (corrected / 1.0) << endl;
-		outFile << "\tTE: " << setprecision(4) << total_te / (corrected / 1.0) << endl;
-		outFile.close();
-	}
-	else if (datasetName == "KITTI")
-	{
-		int pair_num = 555;
-		//string txt_path = datasetPath + "/" + descriptor;
-        const string& txt_path = datasetPath;
-		string analyse_csv = resultPath + "/KITTI_" + descriptor + ".csv";
-		ofstream outFile;
-		outFile.open(analyse_csv.c_str(), ios::out);
-		outFile.setf(ios::fixed, ios::floatfield);
-		outFile << "pair_name" << ',' << "corrected_or_no" << ',' << "inlier_num" << ',' << "total_num" << ',' << "inlier_ratio" << ',' << "RE" << ',' << "TE" << endl;
-		vector<string>fail_pair;
-		vector<double>time;
-		for (int i = id; i < pair_num; i++)
-		{
-			time.clear();
-			cout << "Pair " << i + 1 << "，total" << pair_num/*name_list.size()*/ << "，fail " << fail_pair.size() << endl;
-
-            string filename = to_string(i);/*name_list[i]*/;
-			string corr_path = txt_path + "/" + filename + '/' + descriptor + "@corr.txt";
-			string gt_mat_path = txt_path + "/" + filename + '/' + descriptor + "@gtmat.txt";
-			string gt_label_path = txt_path + "/" + filename + '/' + descriptor + "@gtlabel.txt";
-            string ov_label = "NULL";
-			string folderPath = resultPath + "/" + filename;
-			double re, te;
-			double inlier_num, total_num;
-			double inlier_ratio, success_estimate, total_estimate;
-
-			int corrected = registration("KITTI", "NULL", "NULL", corr_path, gt_label_path, ov_label, gt_mat_path, folderPath, re, te, inlier_num, total_num, inlier_ratio, success_estimate, total_estimate, descriptor, time);
-			if (corrected)
-			{
-				cout << filename << " Success." << endl;
-				RE += re;
-				TE += te;
-			}
-			else
-			{
-				fail_pair.push_back(filename);
-				cout << filename << " Fail." << endl;
-			}
-			outFile << filename << ',' << corrected << ',' << inlier_num << ',' << total_num << ',';
-			outFile << setprecision(4) << inlier_ratio << ',' << re << ',' << te << endl;
-			cout << endl;
-		}
-		outFile.close();
-		double success_num = pair_num - fail_pair.size();
-		cout << "total:" << endl;
-		cout << "\tRR:" << pair_num - fail_pair.size() << "/" << pair_num << " " << success_num / (pair_num / 1.0) << endl;
-		cout << "\tRE:" << RE / (success_num / 1.0) << endl;
-		cout << "\tTE:" << TE / (success_num / 1.0) << endl;
-		cout << "fail pairs:" << endl;
-		for (size_t i = 0; i < fail_pair.size(); i++)
-		{
-			cout << "\t" << fail_pair[i] << endl;
-		}
 	}
 	else if (datasetName == "U3M")
 	{
@@ -602,84 +427,86 @@ int main(int argc, char** argv) {
 			string gtmatPath = folderPath + "/GTmat.txt";
 			string corrPath = folderPath + "/corr.txt";
 			string labelPath = folderPath + "/true_corre.txt";
-//			PointCloudPtr cloud_src(new pcl::PointCloud<pcl::PointXYZ>);
-//			XYZorPly_Read(srcPath, cloud_src);
-//			PointCloudPtr cloud_des(new pcl::PointCloud<pcl::PointXYZ>);
-//			XYZorPly_Read(desPath, cloud_des);
+            //============================
+			PointCloudPtr cloud_src(new pcl::PointCloud<pcl::PointXYZ>);
+			XYZorPly_Read(srcPath, cloud_src);
+			PointCloudPtr cloud_des(new pcl::PointCloud<pcl::PointXYZ>);
+			XYZorPly_Read(desPath, cloud_des);
 
-			//计算点云分辨率
-//			float resolution_src = MeshResolution_mr_compute(cloud_src);
-//			float resolution_des = MeshResolution_mr_compute(cloud_des);
-//			float mr = (resolution_des + resolution_src) / 2;
-//			float sup_radius = 15 * mr; //15
-//			float NMS_radius = 2.7 * mr; //2.7
-//			float GT_thresh = 5 * mr;
-//			vector<int>Idx_model, Idx_scene;
-//			pcl::PointCloud<pcl::PointXYZ>::Ptr keypoint_src;
-//			pcl::PointCloud<pcl::PointXYZ>::Ptr keypoint_tar;
-//			keypoint_src = getHarris3D_detector(cloud_src, NMS_radius, Idx_model);
-//			keypoint_tar = getHarris3D_detector(cloud_des, NMS_radius, Idx_scene);
-//			keypoint_src = removeInvalidkeyPoint(cloud_src, Idx_model, keypoint_src, mr);
-//			keypoint_tar = removeInvalidkeyPoint(cloud_des, Idx_scene, keypoint_tar, mr);
-//			vector<vector<float>> f_s, f_t;
-//			vector<LRF> LRFs_s, LRFs_t;
-//			SHOT_compute(cloud_src, Idx_model, sup_radius, f_s, LRFs_s);
-//			SHOT_compute(cloud_des, Idx_scene, sup_radius, f_t, LRFs_t);
-//			vector<Corre> Corres_initial;
-//			feature_matching(cloud_src, cloud_des, LRFs_s, LRFs_t, Idx_model, Idx_scene, f_s, f_t, Corres_initial);
-//			int true_correct_num = Correct_corre_compute(cloud_src, cloud_des, Corres_initial, GT_thresh, GTmat, folderPath);
-//			if (true_correct_num == 0)
-//			{
-//				cout << " 没有正确匹配! " << endl;
-//				//exit(0);
-//			}
-//			if (true_correct_num >= 3)
-//			{
-//				pairname.push_back(folderName);
-//			}
-//			cout << true_correct_num << "/" << Corres_initial.size() << endl;
-//			FILE* fp1 = fopen(corrPath.c_str(), "w");
-//			for (size_t i = 0; i < Corres_initial.size(); i++)
-//			{
-//				fprintf(fp1, "%f %f %f %f %f %f\n", cloud_src->points[Corres_initial[i].source_idx].x, cloud_src->points[Corres_initial[i].source_idx].y, cloud_src->points[Corres_initial[i].source_idx].z, cloud_des->points[Corres_initial[i].target_idx].x, cloud_des->points[Corres_initial[i].target_idx].y, cloud_des->points[Corres_initial[i].target_idx].z);
-//			}
-//			fclose(fp1);
-//			FILE* fp2 = fopen(gtmatPath.c_str(), "w");
-//			for (int i = 0; i < 4; i++)
-//			{
-//				for (int j = 0; j < 3; j++) {
-//					fprintf(fp2, "%lf ", GTmat(i, j));
-//				}
-//				fprintf(fp2, "%lf\n", GTmat(i, 3));
-//			}
-//			fclose(fp2);
-            //overlap label
-//            if(add_overlap){
-//                string ov_label = folderPath + "/ov.txt";
-//                PointCloudPtr src_trans(new pcl::PointCloud<pcl::PointXYZ>);
-//                pcl::transformPointCloud(*cloud_src, *src_trans, GTmat);
-//                pcl::KdTreeFLANN<pcl::PointXYZ> kdtree_src_trans, kdtree_des;
-//                kdtree_src_trans.setInputCloud(src_trans);
-//                kdtree_des.setInputCloud(cloud_des);
-//                vector<int>src_ind(1), des_ind(1);
-//                vector<float>src_dis(1), des_dis(1);
-//                fp1 = fopen(ov_label.c_str(), "w");
-//                for(auto & i : Corres_initial){
-//                    pcl::PointXYZ src_query = src_trans->points[i.source_idx];
-//                    pcl::PointXYZ des_query = cloud_des->points[i.target_idx];
-//                    kdtree_des.nearestKSearch(src_query, 1, des_ind, src_dis);
-//                    kdtree_src_trans.nearestKSearch(des_query, 1, src_ind, des_dis);
-//                    int src_ov_score = src_dis[0] > GT_thresh ? 0 : 1; //square dist  <= GT_thresh
-//                    int des_ov_score = des_dis[0] > GT_thresh ? 0 : 1;
-//                    if(src_ov_score && des_ov_score){
-//                        fprintf(fp1, "1\n");
-//                    }
-//                    else{
-//                        fprintf(fp1, "0\n");
-//                    }
-//                }
-//                fclose(fp1);
-//            }
+			计算点云分辨率
+			float resolution_src = MeshResolution_mr_compute(cloud_src);
+			float resolution_des = MeshResolution_mr_compute(cloud_des);
+			float mr = (resolution_des + resolution_src) / 2;
+			float sup_radius = 15 * mr; //15
+			float NMS_radius = 2.7 * mr; //2.7
+			float GT_thresh = 5 * mr;
+			vector<int>Idx_model, Idx_scene;
+			pcl::PointCloud<pcl::PointXYZ>::Ptr keypoint_src;
+			pcl::PointCloud<pcl::PointXYZ>::Ptr keypoint_tar;
+			keypoint_src = getHarris3D_detector(cloud_src, NMS_radius, Idx_model);
+			keypoint_tar = getHarris3D_detector(cloud_des, NMS_radius, Idx_scene);
+			keypoint_src = removeInvalidkeyPoint(cloud_src, Idx_model, keypoint_src, mr);
+			keypoint_tar = removeInvalidkeyPoint(cloud_des, Idx_scene, keypoint_tar, mr);
+			vector<vector<float>> f_s, f_t;
+			vector<LRF> LRFs_s, LRFs_t;
+			SHOT_compute(cloud_src, Idx_model, sup_radius, f_s, LRFs_s);
+			SHOT_compute(cloud_des, Idx_scene, sup_radius, f_t, LRFs_t);
+			vector<Corre> Corres_initial;
+			feature_matching(cloud_src, cloud_des, LRFs_s, LRFs_t, Idx_model, Idx_scene, f_s, f_t, Corres_initial);
+			int true_correct_num = Correct_corre_compute(cloud_src, cloud_des, Corres_initial, GT_thresh, GTmat, folderPath);
+			if (true_correct_num == 0)
+			{
+				cout << " 没有正确匹配! " << endl;
+				//exit(0);
+			}
+			if (true_correct_num >= 3)
+			{
+				pairname.push_back(folderName);
+			}
+			cout << true_correct_num << "/" << Corres_initial.size() << endl;
+			FILE* fp1 = fopen(corrPath.c_str(), "w");
+			for (size_t i = 0; i < Corres_initial.size(); i++)
+			{
+				fprintf(fp1, "%f %f %f %f %f %f\n", cloud_src->points[Corres_initial[i].source_idx].x, cloud_src->points[Corres_initial[i].source_idx].y, cloud_src->points[Corres_initial[i].source_idx].z, cloud_des->points[Corres_initial[i].target_idx].x, cloud_des->points[Corres_initial[i].target_idx].y, cloud_des->points[Corres_initial[i].target_idx].z);
+			}
+			fclose(fp1);
+			FILE* fp2 = fopen(gtmatPath.c_str(), "w");
+			for (int i = 0; i < 4; i++)
+			{
+				for (int j = 0; j < 3; j++) {
+					fprintf(fp2, "%lf ", GTmat(i, j));
+				}
+				fprintf(fp2, "%lf\n", GTmat(i, 3));
+			}
+			fclose(fp2);
+            overlap label
+            if(add_overlap){
+                string ov_label = folderPath + "/ov.txt";
+                PointCloudPtr src_trans(new pcl::PointCloud<pcl::PointXYZ>);
+                pcl::transformPointCloud(*cloud_src, *src_trans, GTmat);
+                pcl::KdTreeFLANN<pcl::PointXYZ> kdtree_src_trans, kdtree_des;
+                kdtree_src_trans.setInputCloud(src_trans);
+                kdtree_des.setInputCloud(cloud_des);
+                vector<int>src_ind(1), des_ind(1);
+                vector<float>src_dis(1), des_dis(1);
+                fp1 = fopen(ov_label.c_str(), "w");
+                for(auto & i : Corres_initial){
+                    pcl::PointXYZ src_query = src_trans->points[i.source_idx];
+                    pcl::PointXYZ des_query = cloud_des->points[i.target_idx];
+                    kdtree_des.nearestKSearch(src_query, 1, des_ind, src_dis);
+                    kdtree_src_trans.nearestKSearch(des_query, 1, src_ind, des_dis);
+                    int src_ov_score = src_dis[0] > GT_thresh ? 0 : 1; //square dist  <= GT_thresh
+                    int des_ov_score = des_dis[0] > GT_thresh ? 0 : 1;
+                    if(src_ov_score && des_ov_score){
+                        fprintf(fp1, "1\n");
+                    }
+                    else{
+                        fprintf(fp1, "0\n");
+                    }
+                }
+                fclose(fp1);
+            }
+//============================
             FILE *fp1 = fopen(labelPath.c_str(), "r");
             int cnt = 0;
             while(!feof(fp1))
